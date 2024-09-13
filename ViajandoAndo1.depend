@@ -1,0 +1,34 @@
+# depslib dependency file v1.0
+1707177451 source:c:\users\admin\onedrive\documentos\intropoo\viajandoando1\src\usuario.cpp
+	"Usuario.h"
+	"Vuelo.h"
+	<iostream>
+
+1707174237 c:\users\admin\onedrive\documentos\intropoo\viajandoando1\include\usuario.h
+	<iostream>
+	<vector>
+	"Vuelo.h"
+
+1706052445 source:c:\users\admin\onedrive\documentos\intropoo\viajandoando1\src\asientos.cpp
+	"Asientos.h"
+	<iostream>
+
+1706052447 c:\users\admin\onedrive\documentos\intropoo\viajandoando1\include\asientos.h
+	<iostream>
+
+1707174330 source:c:\users\admin\onedrive\documentos\intropoo\viajandoando1\src\vuelo.cpp
+	"Vuelo.h"
+	<iostream>
+
+1707174301 c:\users\admin\onedrive\documentos\intropoo\viajandoando1\include\vuelo.h
+	<iostream>
+	<vector>
+
+1707177401 source:c:\users\admin\onedrive\documentos\intropoo\viajandoando1\main.cpp
+	<iostream>
+	<fstream>
+	<string>
+	<vector>
+	"Usuario.h"
+	"Vuelo.h"
+

@@ -1,0 +1,9 @@
+usuario1
+contrasena1
+0
+usuario2
+contrasena2
+0
+usuario3
+contrasena3
+0

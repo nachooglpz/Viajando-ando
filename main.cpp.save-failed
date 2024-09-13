@@ -1,0 +1,535 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include "Usuario.h"
+#include "Vuelo.h"
+
+using namespace std;
+
+vector <Usuario> arrayUsuarios;
+vector <Vuelo> arrayVuelos;
+
+void subirDatosUsuarios();
+void subirDatosVuelos();
+void buscarVuelos();
+void reservarCancelarVuelo();
+string iniciarSesion();
+string crearCuenta();
+int buscarIndiceUsuario(string nombreUsuario);
+void revisarPasajeros();
+void revisarVuelosUsuario();
+void anadirVuelo();
+
+
+int main()
+{
+    subirDatosVuelos();
+
+    //Menú de opciones
+    int opcion = 0;
+    while (true){
+        cout << "Bienvenido(a), menu de opciones:" << endl;
+        cout << "1-Buscar vuelos. 2-Reservar o cancelar un vuelo." << endl;
+        cout << "3-Salir del programa." << endl;
+        cout << "Elija la opcion: ";
+        cin >> opcion;
+
+        //Ejecutable del menú de opciones
+        switch (opcion){
+            case 1: cout << endl; buscarVuelos(); break;
+            case 2: cout << endl; reservarCancelarVuelo(); break;
+            case 3: return 1;
+            default:{
+                cout << "Opcion no disponible, por favor vuelva a intentar." << endl;
+                break;
+            }
+        }
+            cout << endl;
+    }
+
+    return 0;
+}
+
+void subirDatosUsuarios(){
+    ifstream archivoUsuarios;
+    string cadena;
+    string nombreArchivo = "usuarios.txt";
+
+    archivoUsuarios.open(nombreArchivo, ios::in);
+    if(archivoUsuarios.fail()){
+        cout<<"El archivo no se pudo abrir";
+        exit(3);
+    }
+
+    int linea = 0;
+    Usuario u;
+    while (!archivoUsuarios.eof()){
+        int atributo = linea % 3;
+        getline(archivoUsuarios, cadena);
+        switch (atributo){
+            case 0:{
+                u.setUsuario(cadena);
+                linea++;
+                break;
+            }
+            case 1:{
+                u.setContrasena(cadena);
+                linea++;
+                break;
+            }
+            case 2:{
+                u.setKm(stof(cadena));
+                arrayUsuarios.push_back(u);
+                linea++;
+                break;
+            }
+        }
+
+    }
+}
+
+void subirDatosVuelos(){
+    ifstream archivoVuelos;
+    string cadena;
+    string nombreArchivo = "vuelos.txt";
+
+    archivoVuelos.open(nombreArchivo, ios::in);
+    if(archivoVuelos.fail()){
+        cout<<"El archivo no se pudo abrir";
+        exit(4);
+    }
+
+    int linea = 0;
+    Vuelo v;
+    while (!archivoVuelos.eof()){
+        getline(archivoVuelos, cadena);
+
+        int atributo = linea % 9;
+
+        switch (atributo){
+            case 0:{
+                v.setPartida(cadena);
+                linea++;
+                break;
+            }
+            case 1:{
+                v.setDestino(cadena);
+                linea++;
+                break;
+            }
+            case 2:{
+                v.setNumero(stoi(cadena));
+                linea++;
+                break;
+            }
+            case 3:{
+                v.setDia(stoi(cadena));
+                linea++;
+                break;
+            }
+            case 4:{
+                v.setPrecio(stof(cadena));
+                linea++;
+                break;
+            }
+            case 5:{
+                v.setKm(stof(cadena));
+                linea++;
+                break;
+            }
+            case 6:{
+                v.setCapacidad(stoi(cadena));
+                linea++;
+                break;
+            }
+            case 7:{
+                v.setOcupacion(stoi(cadena));
+                linea++;
+                break;
+            }
+            case 8:{
+                v.setDuracion(stoi(cadena));
+                arrayVuelos.push_back(v);
+                linea++;
+                break;
+            }
+        }
+
+    }
+}
+
+void buscarVuelos(){
+    int opcion = 0;
+    while (opcion <= 0 || opcion > 7){
+        cout << "Buscar vuelos por:" << endl;
+        cout << "1-Partida. 2-Destino. 3-Numero de vuelo. 4-Dia." << endl;
+        cout << "5-Precio. 6-Distancia. 7-Duracion." << endl;
+        cout << "Elija la opcion: ";
+        cin >> opcion;
+
+        //Ejecutable del menú de opciones
+        switch (opcion){
+            case 1:{
+                string partida;
+                cout << "Ingrese la ciudad de partida: ";
+                cin >> partida;
+                cout << "Los vuelos con partida desde " << partida << " son:" << endl << endl;
+
+                for (int i = 0; i < arrayVuelos.size(); i++){
+                    if (arrayVuelos[i].getPartida() == partida){
+                        arrayVuelos[i].imprimirDatosVuelo();
+                        cout << endl;
+                    }
+                }
+                break;
+            }
+            case 2:{
+                string destino;
+                cout << "Ingrese la ciudad de destino: ";
+                cin >> destino;
+                cout << "Los vuelos con destino a " << destino << " son:" << endl << endl;
+
+                for (int i = 0; i < arrayVuelos.size(); i++){
+                    if (arrayVuelos[i].getDestino() == destino){
+                        arrayVuelos[i].imprimirDatosVuelo();
+                        cout << endl;
+                    }
+                }
+                break;
+            }
+            case 3:{
+                int numeroDeVuelo;
+                cout << "Ingrese el numero de vuelo: ";
+                cin >> numeroDeVuelo;
+
+                for (int i = 0; i < arrayVuelos.size(); i++){
+                    if (arrayVuelos[i].getNumero() == numeroDeVuelo){
+                        cout << "El vuelo es el siguiente: " << endl << endl;
+                        arrayVuelos[i].imprimirDatosVuelo();
+                        cout << endl;
+                    }
+                }
+                break;
+            }
+            case 4:{
+                int dia;
+                cout << "Ingrese el dia de partida: ";
+                cin >> dia;
+                cout << "Los vuelos con partida el dia " << dia << " son:" << endl << endl;
+
+                for (int i = 0; i < arrayVuelos.size(); i++){
+                    if (arrayVuelos[i].getDia() == dia){
+                        arrayVuelos[i].imprimirDatosVuelo();
+                        cout << endl;
+                    }
+                }
+                break;
+            }
+            case 5:{
+                int maximo;
+                cout << "Ingrese el precio maximo: ";
+                cin >> maximo;
+                cout << "Los vuelos con precio maximo de " << maximo << " son:" << endl << endl;
+
+                for (int i = 0; i < arrayVuelos.size(); i++){
+                    if (arrayVuelos[i].getPrecio() <= maximo){
+                        arrayVuelos[i].imprimirDatosVuelo();
+                        cout << endl;
+                    }
+                }
+                break;
+            }
+            case 6:{
+                float distancia;
+                cout << "Ingrese la distancia maxima: ";
+                cin >> distancia;
+                cout << "Los vuelos con maxima distancia de " << distancia << " son:" << endl << endl;
+
+                for (int i = 0; i < arrayVuelos.size(); i++){
+                    if (arrayVuelos[i].getKm() <= distancia){
+                        arrayVuelos[i].imprimirDatosVuelo();
+                        cout << endl;
+                    }
+                }
+                break;
+            }
+            case 7:{
+                int duracion;
+                cout << "Ingrese la duracion maxima: ";
+                cin >> duracion;
+                cout << "Los vuelos con duracion maxima de " << duracion << " son:" << endl << endl;
+
+                for (int i = 0; i < arrayVuelos.size(); i++){
+                    if (arrayVuelos[i].getDuracion() <= duracion){
+                        arrayVuelos[i].imprimirDatosVuelo();
+                        cout << endl;
+                    }
+                }
+                break;
+            }
+            default:{
+                cout << "Opcion no disponible, por favor vuelva a intentar." << endl;
+                break;
+            }
+        }
+    }
+}
+
+void reservarCancelarVuelo(){
+    string sesionUsuario = ""; //Nombre de usuario del usuario
+    int opcion = 0;
+    while (opcion !=1 && opcion != 2){
+        cout << "1-Reservar un vuelo. 2-Cancelar un vuelo." << endl;
+        cout << "Elija la opcion: ";
+        cin >> opcion;
+
+        //Ejecutable del menú de opciones
+        switch (opcion){
+            case 1:{
+                //Pide al usuario que inicie sesion
+                int opSesion = 0;
+                while (opSesion !=1 && opSesion != 2){
+                    cout << "1-Iniciar sesion. 2-Crear cuenta." << endl;
+                    cout << "Elija la opcion: ";
+                    cin >> opSesion;
+
+                    switch (opSesion){
+                        case 1:{
+                            sesionUsuario = iniciarSesion();
+                            if (sesionUsuario == "NoExisteElUsuario"){
+                                cout << "No existe su usuario. Por favor registrese." << endl;
+                                sesionUsuario = crearCuenta();
+                                break;
+                            }
+                            break;
+                        }
+                        case 2:{
+                            sesionUsuario = crearCuenta();
+                            break;
+                        }
+                        default:{
+                            cout << "Opcion no disponible, por favor vuelva a intentar." << endl;
+                            break;
+                        }
+                    }
+                }
+
+                int ingNumVuelo = 0;
+                while (ingNumVuelo < 1){
+                    cout << "Ingrese el numero de vuelo al que desea reservar: ";
+                    cin >> ingNumVuelo;
+
+                    //Revisa que el número de vuelo exista, lo agrega y actualiza los kilómetros que ya tiene
+                    for (int i = 0; i < arrayVuelos.size(); i++){
+                        if (arrayVuelos[i].getNumero() == ingNumVuelo){
+                            arrayVuelos[i].anadirPasajero(sesionUsuario);
+                            float kilometrosAgregar = arrayVuelos[i].getKm();
+
+                            //Total a pagar
+                            float precioAPagar;
+                            int indiceDeUsuario = buscarIndiceUsuario(sesionUsuario);
+                            float revisarKmUsuario = arrayUsuarios[i].getKm();
+                            if (revisarKmUsuario > 50000){
+                                precioAPagar = arrayVuelos[i].getPrecio() * 0.6;
+                                cout << "Se ha aplicado el descuento del 40%." << endl;
+                            }
+                            else {
+                                precioAPagar = arrayVuelos[i].getPrecio();
+                            }
+
+                            cout << "Se ha completado la reservacion para el vuelo " << arrayVuelos[i].getNumero() << " con destino a " << arrayVuelos[i].getDestino() << "." << endl;
+                            cout << "El total a pagar es de: $" << precioAPagar << endl;
+
+                            arrayUsuarios[i].actualizarKm(kilometrosAgregar);
+                            return;
+                        }
+                    }
+                    cout << "El vuelo no existe, vuelva a intentar." << endl;
+                }
+                break;
+            }
+            case 2:{
+                sesionUsuario = iniciarSesion();
+                if (sesionUsuario == "NoExisteElUsuario"){
+                    cout << "No existe su usuario. Reinicie el programa." << endl;
+                    exit(6);
+                }
+
+                int ingNumVuelo = 0;
+                while (ingNumVuelo < 1){
+                    cout << "Ingrese el numero de vuelo que desea cancelar: ";
+                    cin >> ingNumVuelo;
+
+                    //Revisa que el número de vuelo exista, lo quita y actualiza los kilómetros del usuario
+                    if (ingNumVuelo > 0){
+                        for (int i = 0; i < arrayVuelos.size(); i++){
+                            if (arrayVuelos[i].getNumero() == ingNumVuelo){
+                                arrayVuelos[i].quitarPasajero(sesionUsuario);
+                                int indiceDeUsuario = buscarIndiceUsuario(sesionUsuario);
+                                float kilometrosQuitar = arrayVuelos[i].getKm() * (-1);
+                                arrayUsuarios[indiceDeUsuario].actualizarKm(kilometrosQuitar);
+                                cout << "El vuelo " << arrayVuelos[i].getNumero() << " con destino a " << arrayVuelos[i].getDestino() << " ha sido cancelado." << endl;
+                            }
+                        }
+                    }
+                    cout << "El vuelo no existe, vuelva a intentar." << endl;
+                }
+                break;
+            }
+            default:{
+                cout << "Opcion no disponible, por favor vuelva a intentar." << endl;
+                break;
+            }
+        }
+    }
+}
+
+//Valida que el usuario exista y devuelve el nombre de usuario
+string iniciarSesion(){
+    subirDatosUsuarios();
+    string ingUsuario = "";
+    string ingContrasena = " ";
+    cout << "Ingrese su usuario: ";
+    cin >> ingUsuario;
+
+    //Verifica que el usuario exista
+    for (int i = 0; i < arrayUsuarios.size(); i++){
+        if (ingUsuario == arrayUsuarios[i].getUsuario()){
+            //Verifica su contrasena
+            cout << "Ingrese su contrasena: ";
+            cin >> ingContrasena;
+            while (ingContrasena != arrayUsuarios[i].getContrasena()){
+                cout << "Contrasena incorrecta, vuelva a intentar: ";
+                cin >> ingContrasena;
+            }
+            return ingUsuario;
+        }
+    }
+    return "NoExisteElUsuario";
+}
+
+//Crea una cuenta y devuelve el nombre de usuario
+string crearCuenta(){
+    subirDatosUsuarios();
+
+    string ingUsuario, ingContrasena;
+    cout << "Ingrese su nuevo usuario: ";
+    cin >> ingUsuario;
+    cout << "Ingrese su contrasena: ";
+    cin >> ingContrasena;
+
+    ofstream archUsuarios;
+    string cadena;
+    archUsuarios.open("usuarios.txt", ios::out);
+
+    if(archUsuarios.fail()){
+        cout<<"El archivo no se pudo abrir";
+        exit(7);
+    }
+
+    for (int i = 0; i < arrayUsuarios.size(); i++){
+        archUsuarios << arrayUsuarios[i].getUsuario() << endl;
+        archUsuarios << arrayUsuarios[i].getContrasena() << endl;
+        archUsuarios << arrayUsuarios[i].getKm() << endl;
+    }
+
+    archUsuarios << ingUsuario << endl;
+    archUsuarios << ingContrasena << endl;
+    archUsuarios << "0.0" << endl;
+
+    archUsuarios.close();
+
+    arrayUsuarios.clear();
+    subirDatosUsuarios();
+    return ingUsuario;
+}
+
+int buscarIndiceUsuario(string nombreUsuario){
+    for (int i = 0; i < arrayUsuarios.size(); i++){
+        if (arrayUsuarios[i].getUsuario() == nombreUsuario){
+            return i;
+        }
+    }
+}
+
+void revisarPasajeros(){
+    cout << "Ingrese el numero de vuelo: ";
+    int num;
+    cin >> num;
+
+    for (int i = 0; i < arrayVuelos.size(); i++){
+        if (arrayVuelos[i].getNumero() == num){
+            cout << "Los pasajeros del vuelo " << num << " son:" << endl << endl;
+            arrayVuelos[i].imprimirPasajeros();
+        }
+    }
+}
+
+void revisarVuelosUsuario(){
+
+}
+
+void anadirVuelo(){
+    string ingPartida, ingDestino;
+    int ingNumero, ingDia, ingCapacidad, ingDuracion;
+    float ingPrecio, ingKm;
+
+    //Ingresa los datos del vuelo
+    cout << "Ingrese la ciudad de partida: ";
+    cin >> ingPartida;
+    cout << "Ingrese la ciudad de destino: ";
+    cin >> ingDestino;
+    cout << "Ingrese el numero de vuelo: ";
+    cin >> ingNumero;
+    cout << "Ingrese el dia del vuelo: ";
+    cin >> ingDia;
+    cout << "Ingrese el precio del vuelo: ";
+    cin >> ingPrecio;
+    cout << "Ingrese la distancia del vuelo: ";
+    cin >> ingKm;
+    cout << "Ingrese la capacidad del vuelo: ";
+    cin >> ingCapacidad;
+    cout << "Ingrese la capacidad del vuelo: ";
+    cin >> ingDuracion;
+
+    //Abre el archivo
+    ofstream archivo;
+    string cadena;
+    archivo.open("usuarios.txt", ios::out);
+
+    if(archivo.fail()){
+        cout<<"El archivo no se pudo abrir";
+        exit(8);
+    }
+
+    //Añade los vuelos ya existentes al documento
+    for (int i = 0; i < arrayVuelos.size(); i++){
+        archivo << arrayVuelos[i].getPartida() << endl;
+        archivo << arrayVuelos[i].getDestino() << endl;
+        archivo << arrayVuelos[i].getNumero() << endl;
+        archivo << arrayVuelos[i].getDia() << endl;
+        archivo << arrayVuelos[i].getPrecio() << endl;
+        archivo << arrayVuelos[i].getKm() << endl;
+        archivo << arrayVuelos[i].getCapacidad() << endl;
+        archivo << arrayVuelos[i].getOcupacion() << end;
+        archivo << arrayVuelos[i].getDuracion() << endl;
+    }
+
+    //Añade la información del nuevo vuelo
+    archivo << ingPartida << endl;
+    archivo << ingDestino << endl;
+    archivo << ingNumero << endl;
+    archivo << ingDia << endl;
+    archivo << ingPrecio << endl;
+    archivo << ingKm << endl;
+    archivo << ingCapacidad << endl;
+    archivo << "0" << endl; //La ocupación inicial del vuelo es 0
+    archivo << ingDuracion << endl;
+
+    //Finaliza el proceso
+    archivo.close();
+
+    arrayVuelos.clear();
+    subirDatosVuelos();
+}
